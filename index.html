@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Расчёт очков</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; }
+  label { display: inline-block; width: 200px; }
+  input { width: 100px; margin-bottom: 5px; }
+  .hour-entry { margin-bottom: 5px; }
+</style>
+</head>
+<body>
+
+<h1>Расчёт очков</h1>
+
+<div>
+  <label>Осталось шашек:</label>
+  <input type="number" id="remaining"><br>
+
+  <label>Пройдено игр:</label>
+  <input type="number" id="completed"><br>
+
+  <label>Забрано шашек:</label>
+  <input type="number" id="captured"><br>
+
+  <label>Дропнуто игр:</label>
+  <input type="number" id="dropped"><br>
+
+  <label>Очки за дейлики:</label>
+  <input type="number" id="daily"><br>
+
+  <label>Количество значений часов:</label>
+  <input type="number" id="hoursCount">
+  <button onclick="updateHours()">Обновить поля часов</button>
+</div>
+
+<div id="hoursContainer"></div>
+
+<button onclick="calculate()">Рассчитать</button>
+
+<h2 id="result">Результат: </h2>
+
+<script>
+function timeToFloat(timeStr) {
+  const [hours, minutes] = timeStr.split(':').map(Number);
+  return hours + minutes / 60;
+}
+
+function updateHours() {
+  const container = document.getElementById('hoursContainer');
+  container.innerHTML = '';
+  const count = parseInt(document.getElementById('hoursCount').value) || 0;
+  
+  for (let i = 0; i < count; i++) {
+    const div = document.createElement('div');
+    div.className = 'hour-entry';
+    const inputId = `hour${i}`;
+    div.innerHTML = `<label>Часы игры #${i+1} (чч:мм):</label>
+                     <input type="text" class="hourInput" id="${inputId}">`;
+    container.appendChild(div);
+  }
+
+  // Добавляем обработку Enter для перехода на следующее поле
+  const hourInputs = document.querySelectorAll('.hourInput');
+  hourInputs.forEach((input, idx) => {
+    input.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        if (idx + 1 < hourInputs.length) {
+          hourInputs[idx + 1].focus();
+        } else {
+          document.querySelector('button[onclick="calculate()"]').focus();
+        }
+      }
+    });
+  });
+}
+
+function calculate() {
+  try {
+    const remaining = parseFloat(document.getElementById('remaining').value) || 0;
+    const completed = parseFloat(document.getElementById('completed').value) || 0;
+    const captured = parseFloat(document.getElementById('captured').value) || 0;
+    const dropped = parseFloat(document.getElementById('dropped').value) || 0;
+    const daily = parseFloat(document.getElementById('daily').value) || 0;
+
+    const hourInputs = document.querySelectorAll('.hourInput');
+    let hoursInGame = 0;
+    hourInputs.forEach(input => {
+      if (input.value) hoursInGame += timeToFloat(input.value);
+    });
+
+    const result = remaining * completed
+                   + (3 * captured * completed) / (dropped + 1)
+                   + hoursInGame / 2
+                   + daily;
+
+    document.getElementById('result').innerText = `Результат: ${result.toFixed(2)}`;
+  } catch (e) {
+    alert('Ошибка! Неверные данные.');
+  }
+}
+</script>
+
+</body>
+</html>
