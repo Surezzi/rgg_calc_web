@@ -489,28 +489,15 @@
   </div>
 </div>
 
+<!-- УДАЛИЛ ПОЛЯ ВВОДА, ОСТАВИЛ ТОЛЬКО ОСТАЛОСЬ ШАШЕК -->
 <div class="section">
   <h3>Основные параметры</h3>
+  <!-- ТОЛЬКО ОДНО ПОЛЕ ОСТАЛОСЬ -->
   <div class="input-group">
     <label>Осталось шашек:</label>
     <input type="number" id="remaining" value="0">
   </div>
-  <div class="input-group">
-    <label>Пройдено игр:</label>
-    <input type="number" id="completed" value="0">
-  </div>
-  <div class="input-group">
-    <label>Забрано шашек:</label>
-    <input type="number" id="captured" value="0">
-  </div>
-  <div class="input-group">
-    <label>Дропнуто игр:</label>
-    <input type="number" id="dropped" value="0">
-  </div>
-  <div class="input-group">
-    <label>Очки за дейлики:</label>
-    <input type="number" id="daily" value="0">
-  </div>
+  <!-- ОСТАЛЬНЫЕ ПОЛЯ УДАЛЕНЫ, НО ИХ ПЕРЕМЕННЫЕ ОСТАЮТСЯ В ПАМЯТИ -->
 </div>
 
 <div class="section">
@@ -587,11 +574,13 @@
     </div>
     
     <div class="prediction-column">
+      <!-- ИЗМЕНИЛ ЗАГОЛОВОК -->
       <h4>🎯 Вклад при ~<span id="avgGamesLabel">38</span> играх</h4>
       
+      <!-- ИЗМЕНИЛ НАЗВАНИЯ -->
       <div class="prediction-item">
         <div class="title">
-          <span>+<span id="plusCountEnd">1</span> шашек:</span>
+          <span>+<span id="plusCountEnd">1</span> шашек при 38 играх:</span>
         </div>
         <div id="predPlusEnd" class="value positive">+0 очков</div>
         <div id="predPlusEndTotal" class="prediction-total">Всего: 0</div>
@@ -599,7 +588,7 @@
       
       <div class="prediction-item">
         <div class="title">
-          <span>Съесть <span id="captureCountEnd">1</span> шашек:</span>
+          <span>Съесть <span id="captureCountEnd">1</span> шашек при 38 играх:</span>
         </div>
         <div id="predCaptureEnd" class="value positive">+0 очков</div>
         <div id="predCaptureEndTotal" class="prediction-total">Всего: 0</div>
@@ -607,7 +596,7 @@
       
       <div class="prediction-item">
         <div class="title">
-          <span>Дроп 1 игры:</span>
+          <span>Дроп 1 игры при 38 играх:</span>
         </div>
         <div id="predDropEnd" class="value negative">-0 очков</div>
         <div id="predDropEndTotal" class="prediction-total">Всего: 0</div>
@@ -622,13 +611,18 @@ let currentPoints = 0;
 let teamsData = [];
 let lastUpdateTime = '';
 
+// Значения по умолчанию для скрытых полей (остаются в памяти)
+let defaultCompleted = 5;    // Пройдено игр
+let defaultCaptured = 2;     // Забрано шашек
+let defaultDropped = 0;      // Дропнуто игр
+let defaultDaily = 0;        // Очки за дейлики
+
 // Загрузка данных команд
 async function loadTeamsData() {
   try {
     const teamSelect = document.getElementById('teamSelect');
     teamSelect.innerHTML = '<option value="">Загрузка...</option>';
     
-    // Добавляем timestamp чтобы избежать кэширования
     const timestamp = new Date().getTime();
     const response = await fetch(`data/out.json?t=${timestamp}`);
     
@@ -638,7 +632,6 @@ async function loadTeamsData() {
     
     teamsData = await response.json();
     
-    // Обновляем время последнего обновления
     const fileInfo = await fetch(`data/out.json`, { method: 'HEAD' });
     if (fileInfo.ok) {
       const lastModified = fileInfo.headers.get('last-modified');
@@ -648,7 +641,6 @@ async function loadTeamsData() {
       }
     }
     
-    // Заполняем выпадающий список
     teamSelect.innerHTML = '<option value="">-- Выберите команду --</option>';
     
     teamsData.forEach(team => {
@@ -658,19 +650,17 @@ async function loadTeamsData() {
       teamSelect.appendChild(option);
     });
     
-    // Если есть команды, выбираем первую
     if (teamsData.length > 0) {
       teamSelect.value = teamsData[0].team;
       loadTeamData();
     }
-    
     
   } catch (error) {
     console.error('Ошибка загрузки данных:', error);
     document.getElementById('lastUpdate').textContent = 'ошибка загрузки';
     teamSelect.innerHTML = '<option value="">Ошибка загрузки данных</option>';
     
-    // Используем тестовые данные
+    // Тестовые данные
     teamsData = [
       {
         "team": "Болотная братва",
@@ -707,30 +697,25 @@ function loadTeamData() {
   
   if (!selectedTeam) return;
   
-  // Находим выбранную команду
   const team = teamsData.find(t => t.team === selectedTeam);
   
   if (team) {
-    // Заполняем поля формы
-    document.getElementById('completed').value = team.games_completed;
-    document.getElementById('dropped').value = team.games_dropped;
-    document.getElementById('captured').value = team.kills;
+    // Обновляем значения в памяти (не в полях ввода, так как их больше нет)
+    defaultCompleted = team.games_completed || 5;
+    defaultCaptured = team.kills || 2;
+    defaultDropped = team.games_dropped || 0;
     
-    // НЕ заполняем поле "Осталось шашек" - оставляем как было
+    // Оставляем поле "Осталось шашек" без изменений
     
     // Пересчитываем
     calculate();
   }
 }
 
-
 // Сброс формы
 function resetForm() {
+  // Сбрасываем только видимое поле
   document.getElementById('remaining').value = 0;
-  document.getElementById('completed').value = 0;
-  document.getElementById('captured').value = 0;
-  document.getElementById('dropped').value = 0;
-  document.getElementById('daily').value = 0;
   document.getElementById('hoursCount').value = 1;
   
   // Очищаем часы
@@ -740,6 +725,12 @@ function resetForm() {
   // Сбрасываем выбор команды
   document.getElementById('teamSelect').value = '';
   
+  // Сбрасываем значения в памяти к значениям по умолчанию
+  defaultCompleted = 5;
+  defaultCaptured = 2;
+  defaultDropped = 0;
+  defaultDaily = 0;
+  
   // Скрываем прогнозы
   document.getElementById('predictions').style.display = 'none';
   
@@ -747,7 +738,7 @@ function resetForm() {
   document.getElementById('result').innerHTML = 'Результат: ';
 }
 
-// Существующие функции (оставляем без изменений)
+// Существующие функции
 function timeToFloat(timeStr) {
   if (!timeStr) return 0;
   const [hours, minutes] = timeStr.split(':').map(Number);
@@ -802,15 +793,16 @@ function formatPoints(points) {
 
 function calculate() {
   try {
-    // Получаем текущие значения
+    // Получаем значение из видимого поля
     const remaining = parseFloat(document.getElementById('remaining').value) || 0;
-    const completed = parseFloat(document.getElementById('completed').value) || 0;
-    const captured = parseFloat(document.getElementById('captured').value) || 0;
-    const dropped = parseFloat(document.getElementById('dropped').value) || 0;
-    const daily = parseFloat(document.getElementById('daily').value) || 0;
-    const avgGames = parseFloat(document.getElementById('avgGames').value) || 38;
     
-    // Получаем значения для прогнозов
+    // Используем значения из памяти для скрытых полей
+    const completed = defaultCompleted;
+    const captured = defaultCaptured;
+    const dropped = defaultDropped;
+    const daily = defaultDaily;
+    
+    const avgGames = parseFloat(document.getElementById('avgGames').value) || 38;
     const plusCount = parseInt(document.getElementById('predPlusCount').value) || 1;
     const captureCount = parseInt(document.getElementById('predCaptureCount').value) || 1;
     
@@ -840,36 +832,26 @@ function calculate() {
     const pointsAvgGames = calculatePoints(remaining, avgGames, captured, dropped, hoursInGame, daily);
     
     // === РАСЧЁТЫ ДЛЯ ТЕКУЩЕГО МОМЕНТА ===
-    
-    // +N шашек сейчас
     const pointsWithPlusN = calculatePoints(remaining + plusCount, completed, captured, dropped, hoursInGame, daily);
     const diffPlusN = pointsWithPlusN - currentPoints;
     
-    // Съесть N шашек сейчас
     const pointsWithCaptureN = calculatePoints(remaining, completed, captured + captureCount, dropped, hoursInGame, daily);
     const diffCaptureN = pointsWithCaptureN - currentPoints;
     
-    // Дроп 1 игры сейчас
     const pointsWithDrop = calculatePoints(remaining, completed, captured, dropped + 1, hoursInGame, daily);
     const diffDrop = pointsWithDrop - currentPoints;
     
     // === РАСЧЁТЫ ДЛЯ СРЕДНЕГО КОЛИЧЕСТВА ИГР ===
-    
-    // +N шашек при среднем количестве игр
     const pointsAvgWithPlusN = calculatePoints(remaining + plusCount, avgGames, captured, dropped, hoursInGame, daily);
     const diffAvgPlusN = pointsAvgWithPlusN - pointsAvgGames;
     
-    // Съесть N шашек при среднем количестве игр
     const pointsAvgWithCaptureN = calculatePoints(remaining, avgGames, captured + captureCount, dropped, hoursInGame, daily);
     const diffAvgCaptureN = pointsAvgWithCaptureN - pointsAvgGames;
     
-    // Дроп 1 игры при среднем количестве игр
     const pointsAvgWithDrop = calculatePoints(remaining, avgGames, captured, dropped + 1, hoursInGame, daily);
     const diffAvgDrop = pointsAvgWithDrop - pointsAvgGames;
     
     // === ОТОБРАЖЕНИЕ РЕЗУЛЬТАТОВ ===
-    
-    // Основной результат
     document.getElementById('result').innerHTML = 
       `Результат: <strong>${formatPoints(currentPoints)}</strong> очков<br>
        <small>При ${avgGames} играх: ${formatPoints(pointsAvgGames)} очков</small>`;
@@ -929,21 +911,13 @@ function calculate() {
 
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
-  // Загружаем данные команд
   loadTeamsData();
   
-  // Устанавливаем начальные значения
+  // Устанавливаем начальные значения для видимого поля
   document.getElementById('remaining').value = 10;
-  document.getElementById('completed').value = 5;
-  document.getElementById('captured').value = 2;
-  document.getElementById('dropped').value = 0;
-  document.getElementById('daily').value = 0;
   document.getElementById('hoursCount').value = 1;
   
-  // Создаём одно поле для часов
   updateHours();
-  
-  // Рассчитываем начальные значения
   calculate();
 });
 </script>
