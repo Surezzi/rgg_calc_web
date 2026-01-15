@@ -9,11 +9,11 @@
     },
     {
         "team": "Джуди и вагоны",
-        "score": "668 очков",
-        "games_completed": 27,
+        "score": "745 очков",
+        "games_completed": 28,
         "games_dropped": 1,
         "kills": 3,
-        "checkers_alive": 13
+        "checkers_alive": 15
     },
     {
         "team": "Турбо кисы",
@@ -25,10 +25,10 @@
     },
     {
         "team": "Братство",
-        "score": "425 очков",
+        "score": "441 очко",
         "games_completed": 16,
         "games_dropped": 4,
         "kills": 4,
-        "checkers_alive": 14
+        "checkers_alive": 15
     }
 ]
