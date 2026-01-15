@@ -32,28 +32,9 @@
     padding: 40px 20px;
     max-width: 1000px;
     margin: 0 auto;
-    background: linear-gradient(135deg, 
-      #0a0e27 0%, 
-      #1a1535 25%, 
-      #15102a 50%, 
-      #1a1535 75%, 
-      #0a0e27 100%);
-    background-size: 400% 400%;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, #1a1535 100%);
     min-height: 100vh;
     color: var(--text-primary);
-    animation: gradientFlow 15s ease infinite;
-  }
-  
-  @keyframes gradientFlow {
-    0% {
-      background-position: 0% 50%;
-    }
-    50% {
-      background-position: 100% 50%;
-    }
-    100% {
-      background-position: 0% 50%;
-    }
   }
   
   @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
@@ -70,6 +51,7 @@
     letter-spacing: 2px;
   }
   
+  /* Неоновое свечение для заголовка Я ТУПОЙ ХУЕСОС НО НИКТО ОБ ЭТОМ НЕ УЗНАЕТ */
   h1::before {
     content: '⚫ Расчёт очков РГЭГЭГЭ шашек ⚪';
     position: absolute;
@@ -210,6 +192,7 @@
     color: var(--text-primary);
   }
   
+  /* Убираем стрелки у input type="number" */
   input[type="number"]::-webkit-inner-spin-button,
   input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
@@ -456,6 +439,8 @@
   </div>
 </div>
 
+<!-- УДАЛЕН БЛОК "ОСНОВНЫЕ ПАРАМЕТРЫ" -->
+
 <div class="button-group">
   <button onclick="calculate()">🎯 Рассчитать</button>
   <button class="secondary" onclick="resetForm()">🔄 Сбросить</button>
@@ -466,7 +451,7 @@
   
   <div class="prediction-controls">
     <div class="control-item">
-      <label>Прогноз игр к концу ивента:</label>
+      <label>Пройденных игр к концу ивента:</label>
       <div class="control-row">
         <input type="number" id="avgGames" value="38" min="1">
         <button class="secondary small" onclick="calculate()">↻</button>
@@ -515,18 +500,18 @@
     </div>
     
     <div class="prediction-column">
-      <h4>🎯 Вклад к концу ивента</h4>
+      <h4>Вклад к концу ивента</h4>
       
       <div class="prediction-item">
         <div class="title">
-          <span>+<span id="plusCountEnd">1</span> шашек к концу ивента:</span>
+          <span>+<span id="plusCountEnd">1</span> шашек в конце ивента:</span>
         </div>
         <div id="predPlusEnd" class="value positive">+0 очков</div>
       </div>
       
       <div class="prediction-item">
         <div class="title">
-          <span>Съесть <span id="captureCountEnd">1</span> шашек к концу ивента:</span>
+          <span>Съесть <span id="captureCountEnd">1</span> шашек в конце ивента:</span>
         </div>
         <div id="predCaptureEnd" class="value positive">+0 очков</div>
       </div>
@@ -719,8 +704,8 @@ function calculate() {
     const hoursInGame = 0;
     currentPoints = calculatePoints(remaining, completed, captured, dropped, hoursInGame, daily);
     
-    // Очки при прогнозе к концу ивента
-    const pointsEndEvent = calculatePoints(remaining, avgGames, captured, dropped, hoursInGame, daily);
+    // Очки при среднем количестве игр
+    const pointsAvgGames = calculatePoints(remaining, avgGames, captured, dropped, hoursInGame, daily);
     
     // === РАСЧЁТЫ ДЛЯ ТЕКУЩЕГО МОМЕНТА ===
     const pointsWithPlusN = calculatePoints(remaining + plusCount, completed, captured, dropped, hoursInGame, daily);
@@ -732,15 +717,15 @@ function calculate() {
     const pointsWithDrop = calculatePoints(remaining, completed, captured, dropped + 1, hoursInGame, daily);
     const diffDrop = pointsWithDrop - currentPoints;
     
-    // === РАСЧЁТЫ К КОНЦУ ИВЕНТА ===
-    const pointsEndWithPlusN = calculatePoints(remaining + plusCount, avgGames, captured, dropped, hoursInGame, daily);
-    const diffEndPlusN = pointsEndWithPlusN - pointsEndEvent;
+    // === РАСЧЁТЫ ДЛЯ СРЕДНЕГО КОЛИЧЕСТВА ИГР ===
+    const pointsAvgWithPlusN = calculatePoints(remaining + plusCount, avgGames, captured, dropped, hoursInGame, daily);
+    const diffAvgPlusN = pointsAvgWithPlusN - pointsAvgGames;
     
-    const pointsEndWithCaptureN = calculatePoints(remaining, avgGames, captured + captureCount, dropped, hoursInGame, daily);
-    const diffEndCaptureN = pointsEndWithCaptureN - pointsEndEvent;
+    const pointsAvgWithCaptureN = calculatePoints(remaining, avgGames, captured + captureCount, dropped, hoursInGame, daily);
+    const diffAvgCaptureN = pointsAvgWithCaptureN - pointsAvgGames;
     
-    const pointsEndWithDrop = calculatePoints(remaining, avgGames, captured, dropped + 1, hoursInGame, daily);
-    const diffEndDrop = pointsEndWithDrop - pointsEndEvent;
+    const pointsAvgWithDrop = calculatePoints(remaining, avgGames, captured, dropped + 1, hoursInGame, daily);
+    const diffAvgDrop = pointsAvgWithDrop - pointsAvgGames;
     
     // Текущие прогнозы
     document.getElementById('predPlusCurrent').innerHTML = 
@@ -758,21 +743,21 @@ function calculate() {
     document.getElementById('predDropCurrent').className = 
       `value ${diffDrop >= 0 ? 'positive' : 'negative'}`;
     
-    // Прогнозы к концу ивента
+    // Прогнозы при среднем количестве игр
     document.getElementById('predPlusEnd').innerHTML = 
-      diffEndPlusN >= 0 ? `+${formatPoints(diffEndPlusN)} очков` : `${formatPoints(diffEndPlusN)} очков`;
+      diffAvgPlusN >= 0 ? `+${formatPoints(diffAvgPlusN)} очков` : `${formatPoints(diffAvgPlusN)} очков`;
     document.getElementById('predPlusEnd').className = 
-      `value ${diffEndPlusN >= 0 ? 'positive' : 'negative'}`;
+      `value ${diffAvgPlusN >= 0 ? 'positive' : 'negative'}`;
     
     document.getElementById('predCaptureEnd').innerHTML = 
-      diffEndCaptureN >= 0 ? `+${formatPoints(diffEndCaptureN)} очков` : `${formatPoints(diffEndCaptureN)} очков`;
+      diffAvgCaptureN >= 0 ? `+${formatPoints(diffAvgCaptureN)} очков` : `${formatPoints(diffAvgCaptureN)} очков`;
     document.getElementById('predCaptureEnd').className = 
-      `value ${diffEndCaptureN >= 0 ? 'positive' : 'negative'}`;
+      `value ${diffAvgCaptureN >= 0 ? 'positive' : 'negative'}`;
     
     document.getElementById('predDropEnd').innerHTML = 
-      `${formatPoints(diffEndDrop)} очков`;
+      `${formatPoints(diffAvgDrop)} очков`;
     document.getElementById('predDropEnd').className = 
-      `value ${diffEndDrop >= 0 ? 'positive' : 'negative'}`;
+      `value ${diffAvgDrop >= 0 ? 'positive' : 'negative'}`;
     
     // Показываем блок прогнозов
     document.getElementById('predictions').style.display = 'block';
