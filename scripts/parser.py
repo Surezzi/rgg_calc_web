@@ -73,7 +73,7 @@ def main():
         json_data.append(json_team_data)
 
     # save to JSON file
-    with open("out.json", "w", encoding="utf-8") as file:
+    with open("data/out.json", "w", encoding="utf-8") as file:
         json.dump(json_data, file, indent=4, ensure_ascii=False)
 
 if __name__ == "__main__":
