@@ -5,47 +5,792 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Расчёт очков</title>
 <style>
-  body { font-family: Arial, sans-serif; padding: 20px; }
-  label { display: inline-block; width: 200px; }
-  input { width: 100px; margin-bottom: 5px; }
-  .hour-entry { margin-bottom: 5px; }
+  :root {
+    --bg-primary: #0a0e27;
+    --bg-secondary: #1a1f3a;
+    --bg-card: #252b48;
+    --bg-input: #1e2337;
+    --text-primary: #e8eaf6;
+    --text-secondary: #9fa8da;
+    --accent-primary: #667eea;
+    --accent-secondary: #764ba2;
+    --accent-success: #10b981;
+    --accent-warning: #f59e0b;
+    --accent-danger: #ef4444;
+    --border-color: #3a4362;
+    --shadow: rgba(0, 0, 0, 0.3);
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body { 
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+    padding: 40px 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+    background: linear-gradient(135deg, var(--bg-primary) 0%, #1a1535 100%);
+    min-height: 100vh;
+    color: var(--text-primary);
+  }
+  
+  @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+  
+  h1 {
+    text-align: center;
+    margin-bottom: 40px;
+    font-size: 1.8em;
+    color: #ffffff;
+    font-weight: 400;
+    line-height: 1.6;
+    position: relative;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+  
+  /* Неоновое свечение для заголовка */
+  h1::before {
+    content: '⚫ Расчёт очков РГЭГЭГЭ шашек ⚪';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    text-shadow: 
+      0 0 5px #667eea,
+      0 0 10px #667eea,
+      0 0 15px #667eea,
+      0 0 20px #764ba2,
+      0 0 25px #764ba2,
+      0 0 30px #764ba2;
+    z-index: -1;
+    opacity: 0.8;
+    animation: neon-pulse 2s infinite alternate;
+  }
+  
+  h1::after {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: linear-gradient(45deg, 
+      transparent 0%, 
+      rgba(102, 126, 234, 0.1) 25%, 
+      rgba(118, 75, 162, 0.1) 50%, 
+      rgba(102, 126, 234, 0.1) 75%, 
+      transparent 100%);
+    border-radius: 15px;
+    z-index: -2;
+    filter: blur(15px);
+    animation: neon-glow 3s infinite alternate;
+  }
+  
+  @keyframes neon-pulse {
+    0%, 100% {
+      opacity: 0.7;
+      text-shadow: 
+        0 0 5px #667eea,
+        0 0 10px #667eea,
+        0 0 15px #667eea,
+        0 0 20px #764ba2,
+        0 0 25px #764ba2,
+        0 0 30px #764ba2;
+    }
+    50% {
+      opacity: 0.9;
+      text-shadow: 
+        0 0 7px #667eea,
+        0 0 14px #667eea,
+        0 0 21px #667eea,
+        0 0 28px #764ba2,
+        0 0 35px #764ba2,
+        0 0 42px #764ba2;
+    }
+  }
+  
+  @keyframes neon-glow {
+    0%, 100% {
+      opacity: 0.5;
+      filter: blur(15px);
+    }
+    50% {
+      opacity: 0.8;
+      filter: blur(20px);
+    }
+  }
+  
+  .section {
+    background: var(--bg-card);
+    padding: 24px;
+    margin-bottom: 20px;
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 24px var(--shadow);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px var(--shadow);
+  }
+  
+  .section h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--accent-primary);
+    font-size: 1em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .section h3::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 24px;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    border-radius: 2px;
+  }
+  
+  .input-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  label { 
+    display: inline-block; 
+    width: 250px; 
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+  
+  input, select { 
+    width: 140px; 
+    padding: 10px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    font-size: 14px;
+    transition: all 0.3s;
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+  }
+  
+  select {
+    cursor: pointer;
+  }
+  
+  select option {
+    background: var(--bg-card);
+    color: var(--text-primary);
+  }
+  
+  /* Убираем стрелки у input type="number" */
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+  
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  }
+  
+  input::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.5;
+  }
+  
+  .hour-entry { 
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+  }
+  
+  button {
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    color: white;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 400;
+    margin: 5px 5px 5px 0;
+    transition: all 0.3s;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+  }
+  
+  button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  }
+  
+  button:active {
+    transform: translateY(0);
+  }
+  
+  button.secondary {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+  }
+  
+  button.secondary:hover {
+    box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
+  }
+  
+  button.small {
+    padding: 8px 16px;
+    font-size: 13px;
+    min-width: 40px;
+  }
+  
+  .button-group {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  
+  #result {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.15));
+    padding: 24px;
+    border-radius: 16px;
+    font-size: 1.2em;
+    color: var(--accent-success);
+    font-weight: 400;
+    text-align: center;
+    border: 2px solid rgba(16, 185, 129, 0.3);
+    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2);
+    margin: 30px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  #result::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, 
+      transparent, 
+      rgba(16, 185, 129, 0.2), 
+      transparent);
+    transition: left 0.5s;
+  }
+  
+  #result:hover::before {
+    left: 100%;
+  }
+  
+  .predictions {
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.1));
+    padding: 24px;
+    border-radius: 16px;
+    margin-top: 20px;
+    border: 2px solid rgba(245, 158, 11, 0.3);
+    box-shadow: 0 8px 24px rgba(245, 158, 11, 0.2);
+  }
+  
+  .predictions h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: var(--accent-warning);
+    font-size: 1em;
+  }
+  
+  .prediction-controls {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+    padding: 16px;
+    background: var(--bg-secondary);
+    border-radius: 12px;
+  }
+  
+  .control-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .control-item label {
+    width: auto;
+    min-width: auto;
+    font-size: 0.8em;
+    color: var(--text-secondary);
+  }
+  
+  .control-item input {
+    width: 100%;
+  }
+  
+  .control-item .control-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  
+  .prediction-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 16px;
+  }
+  
+  .prediction-column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .prediction-column h4 {
+    font-size: 0.9em;
+    color: var(--accent-warning);
+    text-align: center;
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--border-color);
+  }
+  
+  .prediction-item {
+    padding: 16px 20px;
+    background: var(--bg-card);
+    border-radius: 12px;
+    border-left: 4px solid var(--accent-warning);
+    box-shadow: 0 4px 12px var(--shadow);
+    transition: transform 0.2s;
+  }
+  
+  .prediction-item:hover {
+    transform: translateX(4px);
+  }
+  
+  .prediction-item .title {
+    font-size: 0.9em;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .prediction-item .value {
+    font-size: 1.1em;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .positive { 
+    color: var(--accent-success);
+  }
+  
+  .negative { 
+    color: var(--accent-danger);
+  }
+  
+  .prediction-total {
+    font-size: 0.8em;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-top: 4px;
+  }
+  
+  #hoursContainer {
+    margin-top: 16px;
+  }
+  
+  .stats-info {
+    font-size: 0.8em;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-top: 10px;
+  }
+  
+  .stats-info a {
+    color: var(--accent-primary);
+    text-decoration: none;
+  }
+  
+  .stats-info a:hover {
+    text-decoration: underline;
+  }
+  
+  @media (max-width: 768px) {
+    body {
+      padding: 20px 10px;
+    }
+    
+    h1 {
+      font-size: 1.8em;
+    }
+    
+    label {
+      width: 100%;
+      margin-bottom: 8px;
+    }
+    
+    .input-group {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    input, select {
+      width: 100%;
+    }
+    
+    .prediction-controls {
+      grid-template-columns: 1fr;
+    }
+    
+    .prediction-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .control-item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
 </style>
 </head>
 <body>
+<h1>⚫ Расчёт очков РГЭГЭГЭ шашек ⚪</h1>
 
-<h1>Расчёт очков РГЭГЭГЭ шашек</h1>
-
-<div>
-  <label>Осталось шашек:</label>
-  <input type="number" id="remaining"><br>
-
-  <label>Пройдено игр:</label>
-  <input type="number" id="completed"><br>
-
-  <label>Забрано шашек:</label>
-  <input type="number" id="captured"><br>
-
-  <label>Дропнуто игр:</label>
-  <input type="number" id="dropped"><br>
-
-  <label>Очки за дейлики:</label>
-  <input type="number" id="daily"><br>
-
-  <label>Количество значений часов:</label>
-  <input type="number" id="hoursCount">
-  <button onclick="updateHours()">Обновить поля часов</button>
+<!-- НОВЫЙ СЕКЦИЯ: Выбор команды -->
+<div class="section">
+  <h3>🏆 Выбор команды</h3>
+  <div class="input-group">
+    <label>Выберите команду:</label>
+    <select id="teamSelect" onchange="loadTeamData()">
+      <option value="">-- Загрузка команд... --</option>
+    </select>
+    <button class="secondary small" onclick="loadTeamsData()">🔄 Обновить список</button>
+  </div>
+  <div class="stats-info">
+    Данные обновляются каждые 2 часа. Последнее обновление: <span id="lastUpdate">загрузка...</span>
+    <br><a href="data/out.json" target="_blank">📊 Посмотреть все данные</a>
+  </div>
 </div>
 
-<div id="hoursContainer"></div>
+<div class="section">
+  <h3>Основные параметры</h3>
+  <div class="input-group">
+    <label>Осталось шашек:</label>
+    <input type="number" id="remaining" value="0">
+  </div>
+  <div class="input-group">
+    <label>Пройдено игр:</label>
+    <input type="number" id="completed" value="0">
+  </div>
+  <div class="input-group">
+    <label>Забрано шашек:</label>
+    <input type="number" id="captured" value="0">
+  </div>
+  <div class="input-group">
+    <label>Дропнуто игр:</label>
+    <input type="number" id="dropped" value="0">
+  </div>
+  <div class="input-group">
+    <label>Очки за дейлики:</label>
+    <input type="number" id="daily" value="0">
+  </div>
+</div>
 
-<button onclick="calculate()">Рассчитать</button>
+<div class="section">
+  <h3>Время игры</h3>
+  <div class="input-group">
+    <label>Количество значений часов:</label>
+    <input type="number" id="hoursCount" value="0">
+    <button class="secondary" onclick="updateHours()">Обновить поля часов</button>
+  </div>
+  <div id="hoursContainer"></div>
+</div>
 
-<h2 id="result">Результат: </h2>
+<div class="button-group">
+  <button onclick="calculate()">🎯 Рассчитать</button>
+  <button class="secondary" onclick="resetForm()">🔄 Сбросить</button>
+</div>
+
+<div id="result">Результат: </div>
+
+<div id="predictions" class="predictions" style="display:none;">
+  <h3>📊 Прогнозы изменения очков</h3>
+  
+  <div class="prediction-controls">
+    <div class="control-item">
+      <label>Среднее количество игр:</label>
+      <div class="control-row">
+        <input type="number" id="avgGames" value="38" min="1">
+        <button class="secondary small" onclick="calculate()">↻</button>
+      </div>
+    </div>
+    <div class="control-item">
+      <label>Добавить шашек:</label>
+      <div class="control-row">
+        <input type="number" id="predPlusCount" value="1" min="1">
+        <button class="secondary small" onclick="calculate()">↻</button>
+      </div>
+    </div>
+    <div class="control-item">
+      <label>Съесть шашек:</label>
+      <div class="control-row">
+        <input type="number" id="predCaptureCount" value="1" min="1">
+        <button class="secondary small" onclick="calculate()">↻</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="prediction-grid">
+    <div class="prediction-column">
+      <h4>📈 Текущий вклад</h4>
+      
+      <div class="prediction-item">
+        <div class="title">
+          <span>+<span id="plusCountCurrent">1</span> шашек сейчас:</span>
+        </div>
+        <div id="predPlusCurrent" class="value positive">+0 очков</div>
+        <div id="predPlusCurrentTotal" class="prediction-total">Всего: 0</div>
+      </div>
+      
+      <div class="prediction-item">
+        <div class="title">
+          <span>Съесть <span id="captureCountCurrent">1</span> шашек сейчас:</span>
+        </div>
+        <div id="predCaptureCurrent" class="value positive">+0 очков</div>
+        <div id="predCaptureCurrentTotal" class="prediction-total">Всего: 0</div>
+      </div>
+      
+      <div class="prediction-item">
+        <div class="title">
+          <span>Дроп 1 игры сейчас:</span>
+        </div>
+        <div id="predDropCurrent" class="value negative">-0 очков</div>
+        <div id="predDropCurrentTotal" class="prediction-total">Всего: 0</div>
+      </div>
+    </div>
+    
+    <div class="prediction-column">
+      <h4>🎯 Вклад при ~<span id="avgGamesLabel">38</span> играх</h4>
+      
+      <div class="prediction-item">
+        <div class="title">
+          <span>+<span id="plusCountEnd">1</span> шашек:</span>
+        </div>
+        <div id="predPlusEnd" class="value positive">+0 очков</div>
+        <div id="predPlusEndTotal" class="prediction-total">Всего: 0</div>
+      </div>
+      
+      <div class="prediction-item">
+        <div class="title">
+          <span>Съесть <span id="captureCountEnd">1</span> шашек:</span>
+        </div>
+        <div id="predCaptureEnd" class="value positive">+0 очков</div>
+        <div id="predCaptureEndTotal" class="prediction-total">Всего: 0</div>
+      </div>
+      
+      <div class="prediction-item">
+        <div class="title">
+          <span>Дроп 1 игры:</span>
+        </div>
+        <div id="predDropEnd" class="value negative">-0 очков</div>
+        <div id="predDropEndTotal" class="prediction-total">Всего: 0</div>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
+// Глобальные переменные для хранения данных
+let currentPoints = 0;
+let teamsData = [];
+let lastUpdateTime = '';
+
+// Загрузка данных команд
+async function loadTeamsData() {
+  try {
+    const teamSelect = document.getElementById('teamSelect');
+    teamSelect.innerHTML = '<option value="">Загрузка...</option>';
+    
+    // Добавляем timestamp чтобы избежать кэширования
+    const timestamp = new Date().getTime();
+    const response = await fetch(`data/out.json?t=${timestamp}`);
+    
+    if (!response.ok) {
+      throw new Error('Ошибка загрузки данных');
+    }
+    
+    teamsData = await response.json();
+    
+    // Обновляем время последнего обновления
+    const fileInfo = await fetch(`data/out.json`, { method: 'HEAD' });
+    if (fileInfo.ok) {
+      const lastModified = fileInfo.headers.get('last-modified');
+      if (lastModified) {
+        lastUpdateTime = new Date(lastModified).toLocaleString('ru-RU');
+        document.getElementById('lastUpdate').textContent = lastUpdateTime;
+      }
+    }
+    
+    // Заполняем выпадающий список
+    teamSelect.innerHTML = '<option value="">-- Выберите команду --</option>';
+    
+    teamsData.forEach(team => {
+      const option = document.createElement('option');
+      option.value = team.team;
+      option.textContent = `${team.team} (${team.score})`;
+      teamSelect.appendChild(option);
+    });
+    
+    // Если есть команды, выбираем первую
+    if (teamsData.length > 0) {
+      teamSelect.value = teamsData[0].team;
+      loadTeamData();
+    }
+    
+    // Обновляем среднее значение игр
+    updateAverageGames();
+    
+  } catch (error) {
+    console.error('Ошибка загрузки данных:', error);
+    document.getElementById('lastUpdate').textContent = 'ошибка загрузки';
+    teamSelect.innerHTML = '<option value="">Ошибка загрузки данных</option>';
+    
+    // Используем тестовые данные
+    teamsData = [
+      {
+        "team": "Болотная братва",
+        "score": "1150 очков",
+        "games_completed": 21,
+        "games_dropped": 0,
+        "kills": 12
+      },
+      {
+        "team": "Джуди и вагоны",
+        "score": "675 очков",
+        "games_completed": 26,
+        "games_dropped": 1,
+        "kills": 3
+      }
+    ];
+    
+    setTimeout(() => {
+      teamSelect.innerHTML = '<option value="">-- Выберите команду --</option>';
+      teamsData.forEach(team => {
+        const option = document.createElement('option');
+        option.value = team.team;
+        option.textContent = `${team.team} (${team.score})`;
+        teamSelect.appendChild(option);
+      });
+    }, 1000);
+  }
+}
+
+// Загрузка данных выбранной команды
+function loadTeamData() {
+  const teamSelect = document.getElementById('teamSelect');
+  const selectedTeam = teamSelect.value;
+  
+  if (!selectedTeam) return;
+  
+  // Находим выбранную команду
+  const team = teamsData.find(t => t.team === selectedTeam);
+  
+  if (team) {
+    // Заполняем поля формы
+    document.getElementById('completed').value = team.games_completed;
+    document.getElementById('dropped').value = team.games_dropped;
+    document.getElementById('captured').value = team.kills;
+    
+    // Парсим очки из строки "1150 очков"
+    const scoreMatch = team.score.match(/(\d+)/);
+    if (scoreMatch) {
+      const currentScore = parseInt(scoreMatch[1]);
+      
+      // Рассчитываем начальное значение "осталось шашек"
+      // Используем формулу: score = remaining * completed + (3 * kills * completed) / (dropped + 1)
+      // Найдем remaining из формулы
+      const completed = team.games_completed;
+      const kills = team.kills;
+      const dropped = team.games_dropped;
+      
+      if (completed > 0) {
+        // Формула: score = remaining * completed + (3 * kills * completed) / (dropped + 1)
+        // remaining = (score - (3 * kills * completed) / (dropped + 1)) / completed
+        const part2 = (3 * kills * completed) / (dropped + 1);
+        const remaining = Math.round((currentScore - part2) / completed);
+        document.getElementById('remaining').value = Math.max(remaining, 0);
+      }
+    }
+    
+    // Пересчитываем
+    calculate();
+  }
+}
+
+// Обновление среднего количества игр
+function updateAverageGames() {
+  if (teamsData.length === 0) return;
+  
+  // Рассчитываем среднее количество игр
+  const totalGames = teamsData.reduce((sum, team) => sum + team.games_completed, 0);
+  const avgGames = Math.round(totalGames / teamsData.length);
+  
+  // Обновляем поле
+  document.getElementById('avgGames').value = avgGames;
+  document.getElementById('avgGamesLabel').textContent = avgGames;
+}
+
+// Сброс формы
+function resetForm() {
+  document.getElementById('remaining').value = 0;
+  document.getElementById('completed').value = 0;
+  document.getElementById('captured').value = 0;
+  document.getElementById('dropped').value = 0;
+  document.getElementById('daily').value = 0;
+  document.getElementById('hoursCount').value = 1;
+  
+  // Очищаем часы
+  const hoursContainer = document.getElementById('hoursContainer');
+  hoursContainer.innerHTML = '';
+  
+  // Сбрасываем выбор команды
+  document.getElementById('teamSelect').value = '';
+  
+  // Скрываем прогнозы
+  document.getElementById('predictions').style.display = 'none';
+  
+  // Сбрасываем результат
+  document.getElementById('result').innerHTML = 'Результат: ';
+}
+
+// Существующие функции (оставляем без изменений)
 function timeToFloat(timeStr) {
+  if (!timeStr) return 0;
   const [hours, minutes] = timeStr.split(':').map(Number);
   return hours + minutes / 60;
+}
+
+function validateTimeFormat(timeStr) {
+  if (!timeStr) return true;
+  const regex = /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/;
+  return regex.test(timeStr);
 }
 
 function updateHours() {
@@ -58,11 +803,10 @@ function updateHours() {
     div.className = 'hour-entry';
     const inputId = `hour${i}`;
     div.innerHTML = `<label>Часы игры #${i+1} (чч:мм):</label>
-                     <input type="text" class="hourInput" id="${inputId}">`;
+                     <input type="text" class="hourInput" id="${inputId}" placeholder="00:00">`;
     container.appendChild(div);
   }
-
-  // Добавляем обработку Enter для перехода на следующее поле
+  
   const hourInputs = document.querySelectorAll('.hourInput');
   hourInputs.forEach((input, idx) => {
     input.addEventListener('keydown', function(event) {
@@ -78,31 +822,163 @@ function updateHours() {
   });
 }
 
+function calculatePoints(remaining, completed, captured, dropped, hoursInGame, daily) {
+  return remaining * completed
+         + (3 * captured * completed) / (dropped + 1)
+         + hoursInGame / 2
+         + daily;
+}
+
+function formatPoints(points) {
+  return points.toFixed(2);
+}
+
 function calculate() {
   try {
+    // Получаем текущие значения
     const remaining = parseFloat(document.getElementById('remaining').value) || 0;
     const completed = parseFloat(document.getElementById('completed').value) || 0;
     const captured = parseFloat(document.getElementById('captured').value) || 0;
     const dropped = parseFloat(document.getElementById('dropped').value) || 0;
     const daily = parseFloat(document.getElementById('daily').value) || 0;
-
+    const avgGames = parseFloat(document.getElementById('avgGames').value) || 38;
+    
+    // Получаем значения для прогнозов
+    const plusCount = parseInt(document.getElementById('predPlusCount').value) || 1;
+    const captureCount = parseInt(document.getElementById('predCaptureCount').value) || 1;
+    
+    // Обновляем метки
+    document.getElementById('plusCountCurrent').textContent = plusCount;
+    document.getElementById('plusCountEnd').textContent = plusCount;
+    document.getElementById('captureCountCurrent').textContent = captureCount;
+    document.getElementById('captureCountEnd').textContent = captureCount;
+    document.getElementById('avgGamesLabel').textContent = avgGames;
+    
+    // Рассчитываем часы игры
     const hourInputs = document.querySelectorAll('.hourInput');
     let hoursInGame = 0;
     hourInputs.forEach(input => {
-      if (input.value) hoursInGame += timeToFloat(input.value);
+      if (input.value) {
+        if (!validateTimeFormat(input.value)) {
+          throw new Error(`Неверный формат времени: ${input.value}. Используйте ЧЧ:ММ`);
+        }
+        hoursInGame += timeToFloat(input.value);
+      }
     });
-
-    const result = remaining * completed
-                   + (3 * captured * completed) / (dropped + 1)
-                   + hoursInGame / 2
-                   + daily;
-
-    document.getElementById('result').innerText = `Результат: ${result.toFixed(2)}`;
+    
+    // Текущие очки
+    currentPoints = calculatePoints(remaining, completed, captured, dropped, hoursInGame, daily);
+    
+    // Очки при среднем количестве игр
+    const pointsAvgGames = calculatePoints(remaining, avgGames, captured, dropped, hoursInGame, daily);
+    
+    // === РАСЧЁТЫ ДЛЯ ТЕКУЩЕГО МОМЕНТА ===
+    
+    // +N шашек сейчас
+    const pointsWithPlusN = calculatePoints(remaining + plusCount, completed, captured, dropped, hoursInGame, daily);
+    const diffPlusN = pointsWithPlusN - currentPoints;
+    
+    // Съесть N шашек сейчас
+    const pointsWithCaptureN = calculatePoints(remaining, completed, captured + captureCount, dropped, hoursInGame, daily);
+    const diffCaptureN = pointsWithCaptureN - currentPoints;
+    
+    // Дроп 1 игры сейчас
+    const pointsWithDrop = calculatePoints(remaining, completed, captured, dropped + 1, hoursInGame, daily);
+    const diffDrop = pointsWithDrop - currentPoints;
+    
+    // === РАСЧЁТЫ ДЛЯ СРЕДНЕГО КОЛИЧЕСТВА ИГР ===
+    
+    // +N шашек при среднем количестве игр
+    const pointsAvgWithPlusN = calculatePoints(remaining + plusCount, avgGames, captured, dropped, hoursInGame, daily);
+    const diffAvgPlusN = pointsAvgWithPlusN - pointsAvgGames;
+    
+    // Съесть N шашек при среднем количестве игр
+    const pointsAvgWithCaptureN = calculatePoints(remaining, avgGames, captured + captureCount, dropped, hoursInGame, daily);
+    const diffAvgCaptureN = pointsAvgWithCaptureN - pointsAvgGames;
+    
+    // Дроп 1 игры при среднем количестве игр
+    const pointsAvgWithDrop = calculatePoints(remaining, avgGames, captured, dropped + 1, hoursInGame, daily);
+    const diffAvgDrop = pointsAvgWithDrop - pointsAvgGames;
+    
+    // === ОТОБРАЖЕНИЕ РЕЗУЛЬТАТОВ ===
+    
+    // Основной результат
+    document.getElementById('result').innerHTML = 
+      `Результат: <strong>${formatPoints(currentPoints)}</strong> очков<br>
+       <small>При ${avgGames} играх: ${formatPoints(pointsAvgGames)} очков</small>`;
+    
+    // Текущие прогнозы
+    document.getElementById('predPlusCurrent').innerHTML = 
+      diffPlusN >= 0 ? `+${formatPoints(diffPlusN)} очков` : `${formatPoints(diffPlusN)} очков`;
+    document.getElementById('predPlusCurrentTotal').textContent = 
+      `Всего: ${formatPoints(pointsWithPlusN)}`;
+    document.getElementById('predPlusCurrent').className = 
+      `value ${diffPlusN >= 0 ? 'positive' : 'negative'}`;
+    
+    document.getElementById('predCaptureCurrent').innerHTML = 
+      diffCaptureN >= 0 ? `+${formatPoints(diffCaptureN)} очков` : `${formatPoints(diffCaptureN)} очков`;
+    document.getElementById('predCaptureCurrentTotal').textContent = 
+      `Всего: ${formatPoints(pointsWithCaptureN)}`;
+    document.getElementById('predCaptureCurrent').className = 
+      `value ${diffCaptureN >= 0 ? 'positive' : 'negative'}`;
+    
+    document.getElementById('predDropCurrent').innerHTML = 
+      `${formatPoints(diffDrop)} очков`;
+    document.getElementById('predDropCurrentTotal').textContent = 
+      `Всего: ${formatPoints(pointsWithDrop)}`;
+    document.getElementById('predDropCurrent').className = 
+      `value ${diffDrop >= 0 ? 'positive' : 'negative'}`;
+    
+    // Прогнозы при среднем количестве игр
+    document.getElementById('predPlusEnd').innerHTML = 
+      diffAvgPlusN >= 0 ? `+${formatPoints(diffAvgPlusN)} очков` : `${formatPoints(diffAvgPlusN)} очков`;
+    document.getElementById('predPlusEndTotal').textContent = 
+      `Всего: ${formatPoints(pointsAvgWithPlusN)}`;
+    document.getElementById('predPlusEnd').className = 
+      `value ${diffAvgPlusN >= 0 ? 'positive' : 'negative'}`;
+    
+    document.getElementById('predCaptureEnd').innerHTML = 
+      diffAvgCaptureN >= 0 ? `+${formatPoints(diffAvgCaptureN)} очков` : `${formatPoints(diffAvgCaptureN)} очков`;
+    document.getElementById('predCaptureEndTotal').textContent = 
+      `Всего: ${formatPoints(pointsAvgWithCaptureN)}`;
+    document.getElementById('predCaptureEnd').className = 
+      `value ${diffAvgCaptureN >= 0 ? 'positive' : 'negative'}`;
+    
+    document.getElementById('predDropEnd').innerHTML = 
+      `${formatPoints(diffAvgDrop)} очков`;
+    document.getElementById('predDropEndTotal').textContent = 
+      `Всего: ${formatPoints(pointsAvgWithDrop)}`;
+    document.getElementById('predDropEnd').className = 
+      `value ${diffAvgDrop >= 0 ? 'positive' : 'negative'}`;
+    
+    // Показываем блок прогнозов
+    document.getElementById('predictions').style.display = 'block';
+    
   } catch (e) {
-    alert('Ошибка! Неверные данные.');
+    alert(`Ошибка! ${e.message}`);
+    console.error(e);
   }
 }
-</script>
 
+// Инициализация при загрузке страницы
+document.addEventListener('DOMContentLoaded', function() {
+  // Загружаем данные команд
+  loadTeamsData();
+  
+  // Устанавливаем начальные значения
+  document.getElementById('remaining').value = 10;
+  document.getElementById('completed').value = 5;
+  document.getElementById('captured').value = 2;
+  document.getElementById('dropped').value = 0;
+  document.getElementById('daily').value = 0;
+  document.getElementById('hoursCount').value = 1;
+  
+  // Создаём одно поле для часов
+  updateHours();
+  
+  // Рассчитываем начальные значения
+  calculate();
+});
+</script>
 </body>
 </html>
