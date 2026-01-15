@@ -214,12 +214,6 @@
     opacity: 0.5;
   }
   
-  .hour-entry { 
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-  }
-  
   button {
     background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
     color: white;
@@ -263,39 +257,6 @@
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
-  }
-  
-  #result {
-    background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(5, 150, 105, 0.15));
-    padding: 24px;
-    border-radius: 16px;
-    font-size: 1.2em;
-    color: var(--accent-success);
-    font-weight: 400;
-    text-align: center;
-    border: 2px solid rgba(16, 185, 129, 0.3);
-    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.2);
-    margin: 30px 0;
-    position: relative;
-    overflow: hidden;
-  }
-  
-  #result::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, 
-      transparent, 
-      rgba(16, 185, 129, 0.2), 
-      transparent);
-    transition: left 0.5s;
-  }
-  
-  #result:hover::before {
-    left: 100%;
   }
   
   .predictions {
@@ -412,10 +373,6 @@
     margin-top: 4px;
   }
   
-  #hoursContainer {
-    margin-top: 16px;
-  }
-  
   .stats-info {
     font-size: 0.8em;
     color: var(--text-secondary);
@@ -489,33 +446,23 @@
   </div>
 </div>
 
-<!-- УДАЛИЛ ПОЛЯ ВВОДА, ОСТАВИЛ ТОЛЬКО ОСТАЛОСЬ ШАШЕК -->
+<!-- ТОЛЬКО ОДНО ПОЛЕ ОСТАЛОСЬ -->
 <div class="section">
   <h3>Основные параметры</h3>
-  <!-- ТОЛЬКО ОДНО ПОЛЕ ОСТАЛОСЬ -->
   <div class="input-group">
     <label>Осталось шашек:</label>
     <input type="number" id="remaining" value="0">
   </div>
-  <!-- ОСТАЛЬНЫЕ ПОЛЯ УДАЛЕНЫ, НО ИХ ПЕРЕМЕННЫЕ ОСТАЮТСЯ В ПАМЯТИ -->
 </div>
 
-<div class="section">
-  <h3>Время игры</h3>
-  <div class="input-group">
-    <label>Количество значений часов:</label>
-    <input type="number" id="hoursCount" value="0">
-    <button class="secondary" onclick="updateHours()">Обновить поля часов</button>
-  </div>
-  <div id="hoursContainer"></div>
-</div>
+<!-- УДАЛИЛ СЕКЦИЮ "ВРЕМЯ ИГРЫ" -->
 
 <div class="button-group">
   <button onclick="calculate()">🎯 Рассчитать</button>
   <button class="secondary" onclick="resetForm()">🔄 Сбросить</button>
 </div>
 
-<div id="result">Результат: </div>
+<!-- УДАЛИЛ БЛОК "РЕЗУЛЬТАТ" -->
 
 <div id="predictions" class="predictions" style="display:none;">
   <h3>📊 Прогнозы изменения очков</h3>
@@ -574,10 +521,8 @@
     </div>
     
     <div class="prediction-column">
-      <!-- ИЗМЕНИЛ ЗАГОЛОВОК -->
       <h4>🎯 Вклад при ~<span id="avgGamesLabel">38</span> играх</h4>
       
-      <!-- ИЗМЕНИЛ НАЗВАНИЯ -->
       <div class="prediction-item">
         <div class="title">
           <span>+<span id="plusCountEnd">1</span> шашек при 38 играх:</span>
@@ -705,8 +650,6 @@ function loadTeamData() {
     defaultCaptured = team.kills || 2;
     defaultDropped = team.games_dropped || 0;
     
-    // Оставляем поле "Осталось шашек" без изменений
-    
     // Пересчитываем
     calculate();
   }
@@ -716,11 +659,6 @@ function loadTeamData() {
 function resetForm() {
   // Сбрасываем только видимое поле
   document.getElementById('remaining').value = 0;
-  document.getElementById('hoursCount').value = 1;
-  
-  // Очищаем часы
-  const hoursContainer = document.getElementById('hoursContainer');
-  hoursContainer.innerHTML = '';
   
   // Сбрасываем выбор команды
   document.getElementById('teamSelect').value = '';
@@ -733,53 +671,9 @@ function resetForm() {
   
   // Скрываем прогнозы
   document.getElementById('predictions').style.display = 'none';
-  
-  // Сбрасываем результат
-  document.getElementById('result').innerHTML = 'Результат: ';
 }
 
 // Существующие функции
-function timeToFloat(timeStr) {
-  if (!timeStr) return 0;
-  const [hours, minutes] = timeStr.split(':').map(Number);
-  return hours + minutes / 60;
-}
-
-function validateTimeFormat(timeStr) {
-  if (!timeStr) return true;
-  const regex = /^\d+:[0-5]\d$/
-  return regex.test(timeStr);
-}
-
-function updateHours() {
-  const container = document.getElementById('hoursContainer');
-  container.innerHTML = '';
-  const count = parseInt(document.getElementById('hoursCount').value) || 0;
-  
-  for (let i = 0; i < count; i++) {
-    const div = document.createElement('div');
-    div.className = 'hour-entry';
-    const inputId = `hour${i}`;
-    div.innerHTML = `<label>Часы игры #${i+1} (чч:мм):</label>
-                     <input type="text" class="hourInput" id="${inputId}" placeholder="00:00">`;
-    container.appendChild(div);
-  }
-  
-  const hourInputs = document.querySelectorAll('.hourInput');
-  hourInputs.forEach((input, idx) => {
-    input.addEventListener('keydown', function(event) {
-      if (event.key === 'Enter') {
-        event.preventDefault();
-        if (idx + 1 < hourInputs.length) {
-          hourInputs[idx + 1].focus();
-        } else {
-          document.querySelector('button[onclick="calculate()"]').focus();
-        }
-      }
-    });
-  });
-}
-
 function calculatePoints(remaining, completed, captured, dropped, hoursInGame, daily) {
   return remaining * completed
          + (3 * captured * completed) / (dropped + 1)
@@ -813,19 +707,9 @@ function calculate() {
     document.getElementById('captureCountEnd').textContent = captureCount;
     document.getElementById('avgGamesLabel').textContent = avgGames;
     
-    // Рассчитываем часы игры
-    const hourInputs = document.querySelectorAll('.hourInput');
-    let hoursInGame = 0;
-    hourInputs.forEach(input => {
-      if (input.value) {
-        if (!validateTimeFormat(input.value)) {
-          throw new Error(`Неверный формат времени: ${input.value}. Используйте ЧЧ:ММ`);
-        }
-        hoursInGame += timeToFloat(input.value);
-      }
-    });
+    // Текущие очки (без часовInGame, так как удалили секцию времени)
+    const hoursInGame = 0; // Теперь всегда 0, так как удалили поля для часов
     
-    // Текущие очки
     currentPoints = calculatePoints(remaining, completed, captured, dropped, hoursInGame, daily);
     
     // Очки при среднем количестве игр
@@ -850,11 +734,6 @@ function calculate() {
     
     const pointsAvgWithDrop = calculatePoints(remaining, avgGames, captured, dropped + 1, hoursInGame, daily);
     const diffAvgDrop = pointsAvgWithDrop - pointsAvgGames;
-    
-    // === ОТОБРАЖЕНИЕ РЕЗУЛЬТАТОВ ===
-    document.getElementById('result').innerHTML = 
-      `Результат: <strong>${formatPoints(currentPoints)}</strong> очков<br>
-       <small>При ${avgGames} играх: ${formatPoints(pointsAvgGames)} очков</small>`;
     
     // Текущие прогнозы
     document.getElementById('predPlusCurrent').innerHTML = 
@@ -915,9 +794,8 @@ document.addEventListener('DOMContentLoaded', function() {
   
   // Устанавливаем начальные значения для видимого поля
   document.getElementById('remaining').value = 10;
-  document.getElementById('hoursCount').value = 1;
   
-  updateHours();
+  // Сразу показываем прогнозы
   calculate();
 });
 </script>
