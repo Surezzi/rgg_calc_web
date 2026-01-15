@@ -366,12 +366,7 @@
     color: var(--accent-danger);
   }
   
-  .prediction-total {
-    font-size: 0.8em;
-    color: var(--text-secondary);
-    text-align: center;
-    margin-top: 4px;
-  }
+  /* УБРАЛ СТИЛИ ДЛЯ prediction-total */
   
   .stats-info {
     font-size: 0.8em;
@@ -430,7 +425,6 @@
 <body>
 <h1>⚫ Расчёт очков РГЭГЭГЭ шашек ⚪</h1>
 
-<!-- НОВЫЙ СЕКЦИЯ: Выбор команды -->
 <div class="section">
   <h3>🏆 Выбор команды</h3>
   <div class="input-group">
@@ -446,7 +440,6 @@
   </div>
 </div>
 
-<!-- ТОЛЬКО ОДНО ПОЛЕ ОСТАЛОСЬ -->
 <div class="section">
   <h3>Основные параметры</h3>
   <div class="input-group">
@@ -455,14 +448,10 @@
   </div>
 </div>
 
-<!-- УДАЛИЛ СЕКЦИЮ "ВРЕМЯ ИГРЫ" -->
-
 <div class="button-group">
   <button onclick="calculate()">🎯 Рассчитать</button>
   <button class="secondary" onclick="resetForm()">🔄 Сбросить</button>
 </div>
-
-<!-- УДАЛИЛ БЛОК "РЕЗУЛЬТАТ" -->
 
 <div id="predictions" class="predictions" style="display:none;">
   <h3>📊 Прогнозы изменения очков</h3>
@@ -500,6 +489,7 @@
           <span>+<span id="plusCountCurrent">1</span> шашек сейчас:</span>
         </div>
         <div id="predPlusCurrent" class="value positive">+0 очков</div>
+        <!-- УБРАЛ prediction-total -->
       </div>
       
       <div class="prediction-item">
@@ -507,6 +497,7 @@
           <span>Съесть <span id="captureCountCurrent">1</span> шашек сейчас:</span>
         </div>
         <div id="predCaptureCurrent" class="value positive">+0 очков</div>
+        <!-- УБРАЛ prediction-total -->
       </div>
       
       <div class="prediction-item">
@@ -514,6 +505,7 @@
           <span>Дроп 1 игры сейчас:</span>
         </div>
         <div id="predDropCurrent" class="value negative">-0 очков</div>
+        <!-- УБРАЛ prediction-total -->
       </div>
     </div>
     
@@ -522,23 +514,26 @@
       
       <div class="prediction-item">
         <div class="title">
-          <span>+<span id="plusCountEnd">1</span> шашек:</span>
+          <span>+<span id="plusCountEnd">1</span> шашек при 38 играх:</span>
         </div>
         <div id="predPlusEnd" class="value positive">+0 очков</div>
+        <!-- УБРАЛ prediction-total -->
       </div>
       
       <div class="prediction-item">
         <div class="title">
-          <span>Съесть <span id="captureCountEnd">1</span> шашек:</span>
+          <span>Съесть <span id="captureCountEnd">1</span> шашек при 38 играх:</span>
         </div>
         <div id="predCaptureEnd" class="value positive">+0 очков</div>
+        <!-- УБРАЛ prediction-total -->
       </div>
       
       <div class="prediction-item">
         <div class="title">
-          <span>Дроп 1 игры:</span>
+          <span>Дроп 1 игры при 38 играх:</span>
         </div>
         <div id="predDropEnd" class="value negative">-0 очков</div>
+        <!-- УБРАЛ prediction-total -->
       </div>
     </div>
   </div>
@@ -702,7 +697,7 @@ function calculate() {
     document.getElementById('avgGamesLabel').textContent = avgGames;
     
     // Текущие очки (без часовInGame, так как удалили секцию времени)
-    const hoursInGame = 0; // Теперь всегда 0, так как удалили поля для часов
+    const hoursInGame = 0;
     
     currentPoints = calculatePoints(remaining, completed, captured, dropped, hoursInGame, daily);
     
@@ -729,41 +724,35 @@ function calculate() {
     const pointsAvgWithDrop = calculatePoints(remaining, avgGames, captured, dropped + 1, hoursInGame, daily);
     const diffAvgDrop = pointsAvgWithDrop - pointsAvgGames;
     
-    // Текущие прогнозы
+    // Текущие прогнозы (УБРАЛ ОТОБРАЖЕНИЕ ВСЕГО)
     document.getElementById('predPlusCurrent').innerHTML = 
       diffPlusN >= 0 ? `+${formatPoints(diffPlusN)} очков` : `${formatPoints(diffPlusN)} очков`;
-    document.getElementById('predPlusCurrentTotal').textContent = 
     document.getElementById('predPlusCurrent').className = 
       `value ${diffPlusN >= 0 ? 'positive' : 'negative'}`;
     
     document.getElementById('predCaptureCurrent').innerHTML = 
       diffCaptureN >= 0 ? `+${formatPoints(diffCaptureN)} очков` : `${formatPoints(diffCaptureN)} очков`;
-    document.getElementById('predCaptureCurrentTotal').textContent = 
     document.getElementById('predCaptureCurrent').className = 
       `value ${diffCaptureN >= 0 ? 'positive' : 'negative'}`;
     
     document.getElementById('predDropCurrent').innerHTML = 
       `${formatPoints(diffDrop)} очков`;
-    document.getElementById('predDropCurrentTotal').textContent = 
     document.getElementById('predDropCurrent').className = 
       `value ${diffDrop >= 0 ? 'positive' : 'negative'}`;
     
-    // Прогнозы при среднем количестве игр
+    // Прогнозы при среднем количестве игр (УБРАЛ ОТОБРАЖЕНИЕ ВСЕГО)
     document.getElementById('predPlusEnd').innerHTML = 
       diffAvgPlusN >= 0 ? `+${formatPoints(diffAvgPlusN)} очков` : `${formatPoints(diffAvgPlusN)} очков`;
-    document.getElementById('predPlusEndTotal').textContent = 
     document.getElementById('predPlusEnd').className = 
       `value ${diffAvgPlusN >= 0 ? 'positive' : 'negative'}`;
     
     document.getElementById('predCaptureEnd').innerHTML = 
       diffAvgCaptureN >= 0 ? `+${formatPoints(diffAvgCaptureN)} очков` : `${formatPoints(diffAvgCaptureN)} очков`;
-    document.getElementById('predCaptureEndTotal').textContent = 
     document.getElementById('predCaptureEnd').className = 
       `value ${diffAvgCaptureN >= 0 ? 'positive' : 'negative'}`;
     
     document.getElementById('predDropEnd').innerHTML = 
       `${formatPoints(diffAvgDrop)} очков`;
-    document.getElementById('predDropEndTotal').textContent = 
     document.getElementById('predDropEnd').className = 
       `value ${diffAvgDrop >= 0 ? 'positive' : 'negative'}`;
     
