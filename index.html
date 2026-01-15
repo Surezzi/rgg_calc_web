@@ -366,8 +366,6 @@
     color: var(--accent-danger);
   }
   
-  /* УБРАЛ СТИЛИ ДЛЯ prediction-total */
-  
   .stats-info {
     font-size: 0.8em;
     color: var(--text-secondary);
@@ -425,6 +423,7 @@
 <body>
 <h1>⚫ Расчёт очков РГЭГЭГЭ шашек ⚪</h1>
 
+<!-- НОВЫЙ СЕКЦИЯ: Выбор команды -->
 <div class="section">
   <h3>🏆 Выбор команды</h3>
   <div class="input-group">
@@ -440,13 +439,7 @@
   </div>
 </div>
 
-<div class="section">
-  <h3>Основные параметры</h3>
-  <div class="input-group">
-    <label>Осталось шашек:</label>
-    <input type="number" id="remaining" value="0">
-  </div>
-</div>
+<!-- УДАЛЕН БЛОК "ОСНОВНЫЕ ПАРАМЕТРЫ" -->
 
 <div class="button-group">
   <button onclick="calculate()">🎯 Рассчитать</button>
@@ -489,7 +482,6 @@
           <span>+<span id="plusCountCurrent">1</span> шашек сейчас:</span>
         </div>
         <div id="predPlusCurrent" class="value positive">+0 очков</div>
-        <!-- УБРАЛ prediction-total -->
       </div>
       
       <div class="prediction-item">
@@ -497,7 +489,6 @@
           <span>Съесть <span id="captureCountCurrent">1</span> шашек сейчас:</span>
         </div>
         <div id="predCaptureCurrent" class="value positive">+0 очков</div>
-        <!-- УБРАЛ prediction-total -->
       </div>
       
       <div class="prediction-item">
@@ -505,7 +496,6 @@
           <span>Дроп 1 игры сейчас:</span>
         </div>
         <div id="predDropCurrent" class="value negative">-0 очков</div>
-        <!-- УБРАЛ prediction-total -->
       </div>
     </div>
     
@@ -517,7 +507,6 @@
           <span>+<span id="plusCountEnd">1</span> шашек при 38 играх:</span>
         </div>
         <div id="predPlusEnd" class="value positive">+0 очков</div>
-        <!-- УБРАЛ prediction-total -->
       </div>
       
       <div class="prediction-item">
@@ -525,7 +514,6 @@
           <span>Съесть <span id="captureCountEnd">1</span> шашек при 38 играх:</span>
         </div>
         <div id="predCaptureEnd" class="value positive">+0 очков</div>
-        <!-- УБРАЛ prediction-total -->
       </div>
       
       <div class="prediction-item">
@@ -533,7 +521,6 @@
           <span>Дроп 1 игры при 38 играх:</span>
         </div>
         <div id="predDropEnd" class="value negative">-0 очков</div>
-        <!-- УБРАЛ prediction-total -->
       </div>
     </div>
   </div>
@@ -550,6 +537,7 @@ let defaultCompleted = 5;    // Пройдено игр
 let defaultCaptured = 2;     // Забрано шашек
 let defaultDropped = 0;      // Дропнуто игр
 let defaultDaily = 0;        // Очки за дейлики
+let defaultRemaining = 0;    // Осталось шашек (теперь из JSON)
 
 // Загрузка данных команд
 async function loadTeamsData() {
@@ -598,17 +586,35 @@ async function loadTeamsData() {
     teamsData = [
       {
         "team": "Болотная братва",
-        "score": "1150 очков",
+        "score": "1129 очков",
         "games_completed": 21,
         "games_dropped": 0,
-        "kills": 12
+        "kills": 12,
+        "checkers_alive": 10
       },
       {
         "team": "Джуди и вагоны",
-        "score": "675 очков",
-        "games_completed": 26,
+        "score": "668 очков",
+        "games_completed": 27,
         "games_dropped": 1,
-        "kills": 3
+        "kills": 3,
+        "checkers_alive": 13
+      },
+      {
+        "team": "Братство",
+        "score": "425 очков",
+        "games_completed": 16,
+        "games_dropped": 4,
+        "kills": 4,
+        "checkers_alive": 14
+      },
+      {
+        "team": "Турбо кисы",
+        "score": "415 очков",
+        "games_completed": 12,
+        "games_dropped": 2,
+        "kills": 6,
+        "checkers_alive": 13
       }
     ];
     
@@ -634,10 +640,12 @@ function loadTeamData() {
   const team = teamsData.find(t => t.team === selectedTeam);
   
   if (team) {
-    // Обновляем значения в памяти (не в полях ввода, так как их больше нет)
+    // Обновляем значения в памяти из JSON данных
     defaultCompleted = team.games_completed || 5;
     defaultCaptured = team.kills || 2;
     defaultDropped = team.games_dropped || 0;
+    // БЕРЕМ checkers_alive из JSON для "осталось шашек"
+    defaultRemaining = team.checkers_alive || 0;
     
     // Пересчитываем
     calculate();
@@ -646,9 +654,6 @@ function loadTeamData() {
 
 // Сброс формы
 function resetForm() {
-  // Сбрасываем только видимое поле
-  document.getElementById('remaining').value = 0;
-  
   // Сбрасываем выбор команды
   document.getElementById('teamSelect').value = '';
   
@@ -657,6 +662,7 @@ function resetForm() {
   defaultCaptured = 2;
   defaultDropped = 0;
   defaultDaily = 0;
+  defaultRemaining = 0;
   
   // Скрываем прогнозы
   document.getElementById('predictions').style.display = 'none';
@@ -676,10 +682,8 @@ function formatPoints(points) {
 
 function calculate() {
   try {
-    // Получаем значение из видимого поля
-    const remaining = parseFloat(document.getElementById('remaining').value) || 0;
-    
-    // Используем значения из памяти для скрытых полей
+    // Используем значения из памяти (включая checkers_alive из JSON)
+    const remaining = defaultRemaining;
     const completed = defaultCompleted;
     const captured = defaultCaptured;
     const dropped = defaultDropped;
@@ -696,9 +700,8 @@ function calculate() {
     document.getElementById('captureCountEnd').textContent = captureCount;
     document.getElementById('avgGamesLabel').textContent = avgGames;
     
-    // Текущие очки (без часовInGame, так как удалили секцию времени)
+    // Текущие очки
     const hoursInGame = 0;
-    
     currentPoints = calculatePoints(remaining, completed, captured, dropped, hoursInGame, daily);
     
     // Очки при среднем количестве игр
@@ -724,7 +727,7 @@ function calculate() {
     const pointsAvgWithDrop = calculatePoints(remaining, avgGames, captured, dropped + 1, hoursInGame, daily);
     const diffAvgDrop = pointsAvgWithDrop - pointsAvgGames;
     
-    // Текущие прогнозы (УБРАЛ ОТОБРАЖЕНИЕ ВСЕГО)
+    // Текущие прогнозы
     document.getElementById('predPlusCurrent').innerHTML = 
       diffPlusN >= 0 ? `+${formatPoints(diffPlusN)} очков` : `${formatPoints(diffPlusN)} очков`;
     document.getElementById('predPlusCurrent').className = 
@@ -740,7 +743,7 @@ function calculate() {
     document.getElementById('predDropCurrent').className = 
       `value ${diffDrop >= 0 ? 'positive' : 'negative'}`;
     
-    // Прогнозы при среднем количестве игр (УБРАЛ ОТОБРАЖЕНИЕ ВСЕГО)
+    // Прогнозы при среднем количестве игр
     document.getElementById('predPlusEnd').innerHTML = 
       diffAvgPlusN >= 0 ? `+${formatPoints(diffAvgPlusN)} очков` : `${formatPoints(diffAvgPlusN)} очков`;
     document.getElementById('predPlusEnd').className = 
@@ -768,9 +771,6 @@ function calculate() {
 // Инициализация при загрузке страницы
 document.addEventListener('DOMContentLoaded', function() {
   loadTeamsData();
-  
-  // Устанавливаем начальные значения для видимого поля
-  document.getElementById('remaining').value = 10;
   
   // Сразу показываем прогнозы
   calculate();
