@@ -451,7 +451,7 @@
   
   <div class="prediction-controls">
     <div class="control-item">
-      <label>Пройденных игр к концу ивента:</label>
+      <label>Среднее количество игр:</label>
       <div class="control-row">
         <input type="number" id="avgGames" value="38" min="1">
         <button class="secondary small" onclick="calculate()">↻</button>
@@ -500,25 +500,25 @@
     </div>
     
     <div class="prediction-column">
-      <h4>Вклад к концу ивента</h4>
+      <h4>🎯 Вклад при ~<span id="avgGamesLabel">38</span> играх</h4>
       
       <div class="prediction-item">
         <div class="title">
-          <span>+<span id="plusCountEnd">1</span> шашек в конце ивента:</span>
+          <span>+<span id="plusCountEnd">1</span> шашек при 38 играх:</span>
         </div>
         <div id="predPlusEnd" class="value positive">+0 очков</div>
       </div>
       
       <div class="prediction-item">
         <div class="title">
-          <span>Съесть <span id="captureCountEnd">1</span> шашек в конце ивента:</span>
+          <span>Съесть <span id="captureCountEnd">1</span> шашек при 38 играх:</span>
         </div>
         <div id="predCaptureEnd" class="value positive">+0 очков</div>
       </div>
       
       <div class="prediction-item">
         <div class="title">
-          <span>Дроп 1 игры к концу ивента:</span>
+          <span>Дроп 1 игры при 38 играх:</span>
         </div>
         <div id="predDropEnd" class="value negative">-0 очков</div>
       </div>
