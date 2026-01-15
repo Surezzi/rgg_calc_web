@@ -664,8 +664,6 @@ async function loadTeamsData() {
       loadTeamData();
     }
     
-    // Обновляем среднее значение игр
-    updateAverageGames();
     
   } catch (error) {
     console.error('Ошибка загрузки данных:', error);
@@ -725,18 +723,6 @@ function loadTeamData() {
   }
 }
 
-// Обновление среднего количества игр
-function updateAverageGames() {
-  if (teamsData.length === 0) return;
-  
-  // Рассчитываем среднее количество игр из games_completed
-  const totalGames = teamsData.reduce((sum, team) => sum + team.games_completed, 0);
-  const avgGames = Math.round(totalGames / teamsData.length);
-  
-  // Обновляем поле среднего количества игр
-  document.getElementById('avgGames').value = avgGames;
-  document.getElementById('avgGamesLabel').textContent = avgGames;
-}
 
 // Сброс формы
 function resetForm() {
