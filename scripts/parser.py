@@ -60,6 +60,21 @@ def main():
         data[team_name]["games_dropped"] += int(player_games_dropped)
         data[team_name]["kills"] += int(player_kills)
 
+    # helper mapping structure
+    color_name_to_hex = {
+        "blue": "#3b82f6",
+        "yellow": "#edb007",
+        "red": "#d52020",
+        "green": "#179646"
+    }
+
+    # parse checkers count
+    checkers_container = soup.find_all("h6")[2].parent.find("div", class_="absolute")
+    for color_name in color_name_to_hex:
+        checkers_count = len(checkers_container.find_all("img", src=re.compile(".+" + color_name + ".+")))
+        team_name = color_to_team[color_name_to_hex[color_name]]
+        data[team_name]["checkers_alive"] = checkers_count
+
     # convert data to JSON
     json_data = []
     for team_name in data:
@@ -69,11 +84,12 @@ def main():
             "games_completed": data[team_name]["games_completed"],
             "games_dropped": data[team_name]["games_dropped"],
             "kills": data[team_name]["kills"],
+            "checkers_alive": data[team_name]["checkers_alive"],
         }
         json_data.append(json_team_data)
 
     # save to JSON file
-    with open("data/out.json", "w", encoding="utf-8") as file:
+    with open("out.json", "w", encoding="utf-8") as file:
         json.dump(json_data, file, indent=4, ensure_ascii=False)
 
 if __name__ == "__main__":
