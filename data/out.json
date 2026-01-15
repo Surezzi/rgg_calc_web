@@ -1,14 +1,14 @@
 [
     {
         "team": "Болотная братва",
-        "score": "1150 очков",
+        "score": "1129 очков",
         "games_completed": 21,
         "games_dropped": 0,
         "kills": 12
     },
     {
         "team": "Джуди и вагоны",
-        "score": "675 очков",
+        "score": "649 очков",
         "games_completed": 26,
         "games_dropped": 1,
         "kills": 3
@@ -22,9 +22,9 @@
     },
     {
         "team": "Турбо кисы",
-        "score": "345 очков",
-        "games_completed": 11,
+        "score": "415 очков",
+        "games_completed": 12,
         "games_dropped": 2,
-        "kills": 4
+        "kills": 6
     }
 ]
