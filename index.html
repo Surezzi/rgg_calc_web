@@ -500,7 +500,6 @@
           <span>+<span id="plusCountCurrent">1</span> шашек сейчас:</span>
         </div>
         <div id="predPlusCurrent" class="value positive">+0 очков</div>
-        <div id="predPlusCurrentTotal" class="prediction-total">Всего: 0</div>
       </div>
       
       <div class="prediction-item">
@@ -508,7 +507,6 @@
           <span>Съесть <span id="captureCountCurrent">1</span> шашек сейчас:</span>
         </div>
         <div id="predCaptureCurrent" class="value positive">+0 очков</div>
-        <div id="predCaptureCurrentTotal" class="prediction-total">Всего: 0</div>
       </div>
       
       <div class="prediction-item">
@@ -516,7 +514,6 @@
           <span>Дроп 1 игры сейчас:</span>
         </div>
         <div id="predDropCurrent" class="value negative">-0 очков</div>
-        <div id="predDropCurrentTotal" class="prediction-total">Всего: 0</div>
       </div>
     </div>
     
@@ -528,7 +525,6 @@
           <span>+<span id="plusCountEnd">1</span> шашек:</span>
         </div>
         <div id="predPlusEnd" class="value positive">+0 очков</div>
-        <div id="predPlusEndTotal" class="prediction-total">Всего: 0</div>
       </div>
       
       <div class="prediction-item">
@@ -536,7 +532,6 @@
           <span>Съесть <span id="captureCountEnd">1</span> шашек:</span>
         </div>
         <div id="predCaptureEnd" class="value positive">+0 очков</div>
-        <div id="predCaptureEndTotal" class="prediction-total">Всего: 0</div>
       </div>
       
       <div class="prediction-item">
@@ -544,7 +539,6 @@
           <span>Дроп 1 игры:</span>
         </div>
         <div id="predDropEnd" class="value negative">-0 очков</div>
-        <div id="predDropEndTotal" class="prediction-total">Всего: 0</div>
       </div>
     </div>
   </div>
@@ -739,21 +733,18 @@ function calculate() {
     document.getElementById('predPlusCurrent').innerHTML = 
       diffPlusN >= 0 ? `+${formatPoints(diffPlusN)} очков` : `${formatPoints(diffPlusN)} очков`;
     document.getElementById('predPlusCurrentTotal').textContent = 
-      `Всего: ${formatPoints(pointsWithPlusN)}`;
     document.getElementById('predPlusCurrent').className = 
       `value ${diffPlusN >= 0 ? 'positive' : 'negative'}`;
     
     document.getElementById('predCaptureCurrent').innerHTML = 
       diffCaptureN >= 0 ? `+${formatPoints(diffCaptureN)} очков` : `${formatPoints(diffCaptureN)} очков`;
     document.getElementById('predCaptureCurrentTotal').textContent = 
-      `Всего: ${formatPoints(pointsWithCaptureN)}`;
     document.getElementById('predCaptureCurrent').className = 
       `value ${diffCaptureN >= 0 ? 'positive' : 'negative'}`;
     
     document.getElementById('predDropCurrent').innerHTML = 
       `${formatPoints(diffDrop)} очков`;
     document.getElementById('predDropCurrentTotal').textContent = 
-      `Всего: ${formatPoints(pointsWithDrop)}`;
     document.getElementById('predDropCurrent').className = 
       `value ${diffDrop >= 0 ? 'positive' : 'negative'}`;
     
@@ -761,21 +752,18 @@ function calculate() {
     document.getElementById('predPlusEnd').innerHTML = 
       diffAvgPlusN >= 0 ? `+${formatPoints(diffAvgPlusN)} очков` : `${formatPoints(diffAvgPlusN)} очков`;
     document.getElementById('predPlusEndTotal').textContent = 
-      `Всего: ${formatPoints(pointsAvgWithPlusN)}`;
     document.getElementById('predPlusEnd').className = 
       `value ${diffAvgPlusN >= 0 ? 'positive' : 'negative'}`;
     
     document.getElementById('predCaptureEnd').innerHTML = 
       diffAvgCaptureN >= 0 ? `+${formatPoints(diffAvgCaptureN)} очков` : `${formatPoints(diffAvgCaptureN)} очков`;
     document.getElementById('predCaptureEndTotal').textContent = 
-      `Всего: ${formatPoints(pointsAvgWithCaptureN)}`;
     document.getElementById('predCaptureEnd').className = 
       `value ${diffAvgCaptureN >= 0 ? 'positive' : 'negative'}`;
     
     document.getElementById('predDropEnd').innerHTML = 
       `${formatPoints(diffAvgDrop)} очков`;
     document.getElementById('predDropEndTotal').textContent = 
-      `Всего: ${formatPoints(pointsAvgWithDrop)}`;
     document.getElementById('predDropEnd').className = 
       `value ${diffAvgDrop >= 0 ? 'positive' : 'negative'}`;
     
