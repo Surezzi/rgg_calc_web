@@ -19,15 +19,14 @@ jobs:
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
-        
     
     - name: Install dependencies
       run: pip install requests beautifulsoup4
     
     - name: Run parser
       run: python scripts/parser.py
-      
-     - name: Debug
+    
+    - name: Debug
       run: |
         echo "=== ПРОВЕРКА ФАЙЛОВ ==="
         ls -la
@@ -39,7 +38,7 @@ jobs:
         else
           echo "Файл data/out.json не найден!"
         fi
-        
+    
     - name: Auto commit and push
       uses: stefanzweifel/git-auto-commit-action@v4
       with:
