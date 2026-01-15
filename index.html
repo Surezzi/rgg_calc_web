@@ -718,26 +718,7 @@ function loadTeamData() {
     document.getElementById('dropped').value = team.games_dropped;
     document.getElementById('captured').value = team.kills;
     
-    // Парсим очки из строки "1150 очков"
-    const scoreMatch = team.score.match(/(\d+)/);
-    if (scoreMatch) {
-      const currentScore = parseInt(scoreMatch[1]);
-      
-      // Рассчитываем начальное значение "осталось шашек"
-      // Используем формулу: score = remaining * completed + (3 * kills * completed) / (dropped + 1)
-      // Найдем remaining из формулы
-      const completed = team.games_completed;
-      const kills = team.kills;
-      const dropped = team.games_dropped;
-      
-      if (completed > 0) {
-        // Формула: score = remaining * completed + (3 * kills * completed) / (dropped + 1)
-        // remaining = (score - (3 * kills * completed) / (dropped + 1)) / completed
-        const part2 = (3 * kills * completed) / (dropped + 1);
-        const remaining = Math.round((currentScore - part2) / completed);
-        document.getElementById('remaining').value = Math.max(remaining, 0);
-      }
-    }
+    // НЕ заполняем поле "Осталось шашек" - оставляем как было
     
     // Пересчитываем
     calculate();
@@ -748,11 +729,11 @@ function loadTeamData() {
 function updateAverageGames() {
   if (teamsData.length === 0) return;
   
-  // Рассчитываем среднее количество игр
+  // Рассчитываем среднее количество игр из games_completed
   const totalGames = teamsData.reduce((sum, team) => sum + team.games_completed, 0);
   const avgGames = Math.round(totalGames / teamsData.length);
   
-  // Обновляем поле
+  // Обновляем поле среднего количества игр
   document.getElementById('avgGames').value = avgGames;
   document.getElementById('avgGamesLabel').textContent = avgGames;
 }
