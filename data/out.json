@@ -1,8 +1,8 @@
 [
     {
         "team": "Болотная братва",
-        "score": "1274 очка",
-        "games_completed": 24,
+        "score": "1321 очко",
+        "games_completed": 25,
         "games_dropped": 0,
         "kills": 12,
         "checkers_alive": 10
@@ -25,8 +25,8 @@
     },
     {
         "team": "Братство",
-        "score": "482 очка",
-        "games_completed": 18,
+        "score": "506 очков",
+        "games_completed": 19,
         "games_dropped": 4,
         "kills": 4,
         "checkers_alive": 15
