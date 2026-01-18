@@ -17,18 +17,18 @@
     },
     {
         "team": "Братство",
-        "score": "866 очков",
-        "games_completed": 30,
+        "score": "885 очков",
+        "games_completed": 31,
         "games_dropped": 4,
         "kills": 7,
         "checkers_alive": 15
     },
     {
         "team": "Турбо кисы",
-        "score": "664 очка",
-        "games_completed": 18,
+        "score": "728 очков",
+        "games_completed": 19,
         "games_dropped": 2,
         "kills": 10,
-        "checkers_alive": 11
+        "checkers_alive": 12
     }
 ]
