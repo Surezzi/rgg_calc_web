@@ -17,18 +17,18 @@
     },
     {
         "team": "Джуди и вагоны",
-        "score": "1067 очков",
+        "score": "1029 очков",
         "games_completed": 38,
         "games_dropped": 2,
         "kills": 8,
-        "checkers_alive": 13
+        "checkers_alive": 12
     },
     {
         "team": "Турбо кисы",
-        "score": "745 очков",
-        "games_completed": 22,
+        "score": "807 очков",
+        "games_completed": 23,
         "games_dropped": 3,
-        "kills": 10,
+        "kills": 11,
         "checkers_alive": 12
     }
 ]
