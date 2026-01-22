@@ -1,11 +1,11 @@
 [
     {
         "team": "Болотная братва",
-        "score": "3011 очков",
-        "games_completed": 45,
+        "score": "3123 очка",
+        "games_completed": 46,
         "games_dropped": 0,
         "kills": 16,
-        "checkers_alive": 13
+        "checkers_alive": 14
     },
     {
         "team": "Джуди и вагоны",
@@ -25,8 +25,8 @@
     },
     {
         "team": "Турбо кисы",
-        "score": "1201 очко",
-        "games_completed": 34,
+        "score": "1225 очков",
+        "games_completed": 35,
         "games_dropped": 5,
         "kills": 15,
         "checkers_alive": 15
