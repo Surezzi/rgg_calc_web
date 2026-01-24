@@ -1,10 +1,10 @@
 [
     {
         "team": "Болотная братва",
-        "score": "3409 очков",
-        "games_completed": 52,
+        "score": "3789 очков",
+        "games_completed": 53,
         "games_dropped": 0,
-        "kills": 16,
+        "kills": 18,
         "checkers_alive": 12
     },
     {
@@ -17,11 +17,11 @@
     },
     {
         "team": "Братство",
-        "score": "1761 очко",
+        "score": "1641 очко",
         "games_completed": 60,
         "games_dropped": 6,
         "kills": 15,
-        "checkers_alive": 14
+        "checkers_alive": 12
     },
     {
         "team": "Турбо кисы",
