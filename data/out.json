@@ -1,34 +1,34 @@
 [
     {
         "team": "Болотная братва",
-        "score": "3924 очка",
+        "score": "3759 очков",
         "games_completed": 55,
         "games_dropped": 0,
         "kills": 18,
-        "checkers_alive": 12
+        "checkers_alive": 9
     },
     {
         "team": "Джуди и вагоны",
-        "score": "2344 очка",
+        "score": "2278 очков",
         "games_completed": 66,
         "games_dropped": 2,
         "kills": 15,
-        "checkers_alive": 14
+        "checkers_alive": 13
     },
     {
         "team": "Братство",
-        "score": "1946 очков",
+        "score": "1882 очка",
         "games_completed": 64,
         "games_dropped": 6,
         "kills": 16,
-        "checkers_alive": 15
+        "checkers_alive": 14
     },
     {
         "team": "Турбо кисы",
-        "score": "1616 очков",
+        "score": "1729 очков",
         "games_completed": 48,
         "games_dropped": 6,
-        "kills": 17,
+        "kills": 21,
         "checkers_alive": 15
     }
 ]
